@@ -39,6 +39,9 @@ echo "WLR_BACKENDS=drm,libinput" >> ${env_file}
 if [ -n "${WLR_DRM_AFBC_ALT_PRIMARY}" ]; then
   echo "WLR_DRM_AFBC_ALT_PRIMARY=${WLR_DRM_AFBC_ALT_PRIMARY}" >> ${env_file}
 fi
+if [ -n "${PVR_I_WANT_A_BROKEN_VULKAN_DRIVER}" ]; then
+  echo "PVR_I_WANT_A_BROKEN_VULKAN_DRIVER=${PVR_I_WANT_A_BROKEN_VULKAN_DRIVER}" >> ${env_file}
+fi
 
 # Scan connectors
 card=/sys/class/drm/card${card_no}
