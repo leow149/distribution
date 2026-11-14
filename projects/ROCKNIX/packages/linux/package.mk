@@ -32,7 +32,7 @@ case ${DEVICE} in
     PKG_URL="https://www.kernel.org/pub/linux/kernel/v${PKG_VERSION/.*/}.x/${PKG_NAME}-${PKG_VERSION}.tar.xz"
     PKG_PATCH_DIRS+=" 7.2.6"
     ;;
-  S922X)
+  A133|S922X)
     PKG_VERSION="7.3.4"
     PKG_SHA256="b11b6df8295e8e991ff040b71aaa4994a8b55caa23b6b092907f195b5840fd1f"
     PKG_URL="https://www.kernel.org/pub/linux/kernel/v${PKG_VERSION/.*/}.x/${PKG_NAME}-${PKG_VERSION}.tar.xz"
@@ -88,6 +88,11 @@ if [ "${DEVICE}" = "RK3326" -o "${DEVICE}" = "RK3566" ]; then
   PKG_DEPENDS_UNPACK+=" generic-dsi"
 elif [ "${DEVICE}" = "SM8250" -o "${DEVICE}" = "H700" -o "${DEVICE}" = "SM8650" -o "${DEVICE}" = "SM8750" -o "${DEVICE}" = "SDM845" ]; then
   PKG_DEPENDS_UNPACK+=" kernel-firmware"
+fi
+
+# A133 builds the GPU and Wi-Fi firmware into the kernel.
+if [ "${DEVICE}" = "A133" ]; then
+  PKG_DEPENDS_UNPACK+=" a133-firmware"
 fi
 
 # SM8650/SM8750 build device-specific firmware blobs into the kernel, so the
@@ -237,6 +242,14 @@ pre_make_target() {
       cp -Lv $(get_build_dir kernel-firmware)/.copied-firmware/qcom/sdm845/cdsp.mbn ${PKG_BUILD}/external-firmware/qcom/sdm845
 
     FW_LIST="$(find ${PKG_BUILD}/external-firmware -type f | sed 's|.*external-firmware/||' | sort | xargs)"
+
+    ${PKG_BUILD}/scripts/config --set-str CONFIG_EXTRA_FIRMWARE "${FW_LIST}"
+    ${PKG_BUILD}/scripts/config --set-str CONFIG_EXTRA_FIRMWARE_DIR "external-firmware"
+  elif [ "${TARGET_ARCH}" = "aarch64" -a "${DEVICE}" = "A133" ]; then
+    mkdir -p ${PKG_BUILD}/external-firmware
+      cp -a $(get_pkg_directory a133-firmware)/sources/firmware/{powervr,xr829} ${PKG_BUILD}/external-firmware
+
+    FW_LIST="$(find ${PKG_BUILD}/external-firmware -type f ! -name 'fw_xr829_bt.bin' ! -name 'etf_xr829.bin' | sed 's|.*external-firmware/||' | sort | xargs)"
 
     ${PKG_BUILD}/scripts/config --set-str CONFIG_EXTRA_FIRMWARE "${FW_LIST}"
     ${PKG_BUILD}/scripts/config --set-str CONFIG_EXTRA_FIRMWARE_DIR "external-firmware"
@@ -423,7 +436,7 @@ makeinstall_target() {
     mkdir -p ${INSTALL}/usr/share/bootloader
     for dtb in arch/${TARGET_KERNEL_ARCH}/boot/dts/**/*.dtb; do
       if [ -f ${dtb} ]; then
-        if [ "${DEVICE}" = "H700" -o "${DEVICE}" = "RK3326" -o "${DEVICE}" = "RK3399" -o "${DEVICE}" = "RK3566" -o "${DEVICE}" = "RK3576" -o "${DEVICE}" = "RK3588" ]; then
+        if [ "${DEVICE}" = "A133" -o "${DEVICE}" = "H700" -o "${DEVICE}" = "RK3326" -o "${DEVICE}" = "RK3399" -o "${DEVICE}" = "RK3566" -o "${DEVICE}" = "RK3576" -o "${DEVICE}" = "RK3588" ]; then
           mkdir -p ${INSTALL}/usr/share/bootloader/device_trees
           cp -v ${dtb} ${INSTALL}/usr/share/bootloader/device_trees
         else

@@ -26,7 +26,7 @@ src-pkg:
 docs:
 	./tools/foreach './scripts/clean emulators && ./scripts/build emulators'
 
-world: RK3588 RK3576 RK3566 RK3326 RK3399 S922X SM8250 SM8550 H700 SM8650 SM8750
+world: RK3588 RK3576 RK3566 RK3326 RK3399 S922X SM8250 SM8550 H700 A133 SM8650 SM8750
 
 kconfig-olddefconfig-%:
 	DEVICE=$* ./tools/adjust_kernel_config olddefconfig
@@ -72,6 +72,11 @@ H700:
 	unset DEVICE_ROOT
 	PROJECT=ROCKNIX DEVICE=H700 ARCH=arm ./scripts/build_distro
 	PROJECT=ROCKNIX DEVICE=H700 ARCH=aarch64 ./scripts/build_distro
+
+A133:
+	unset DEVICE_ROOT
+	PROJECT=ROCKNIX DEVICE=A133 ARCH=arm ./scripts/build_distro
+	PROJECT=ROCKNIX DEVICE=A133 ARCH=aarch64 ./scripts/build_distro
 
 SM4450:
 	unset DEVICE_ROOT

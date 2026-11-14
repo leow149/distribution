@@ -1,0 +1,10 @@
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a133-trimui-smartpro.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a133-trimui-smartpro.dts
+@@ -25,6 +25,7 @@
+ 	model = "TrimUI Smart Pro";
+ 	chassis-type = "handset";
+ 	compatible = "trimui,smart-pro", "allwinner,sun50i-a100";
++	rocknix-dt-id = "sun50i-a133-trimui-smartpro";
+ 
+ 	aliases {
+ 		ethernet0 = &wifi;

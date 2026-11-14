@@ -22,7 +22,7 @@ makeinstall_target() {
 
   # Non-InputPlumber platforms require custom input mapping
   case ${DEVICE} in
-    H700|RK3326|RK3399|RK3588|S922X)
+    A133|H700|RK3326|RK3399|RK3588|S922X)
       cp -a ${PKG_DIR}/config/commander.cfg ${INSTALL}/usr/share/commander
       ;;
   esac

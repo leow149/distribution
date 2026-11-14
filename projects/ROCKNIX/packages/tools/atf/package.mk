@@ -13,6 +13,11 @@ PKG_TOOLCHAIN="manual"
 PKG_PATCH_DIRS+="${DEVICE}"
 
 case ${DEVICE} in
+  A133)
+    PKG_VERSION="6a164dda7208d3f2c0a5c4a1681db5ec37532bf5"
+    PKG_SHA256="2ccb806f0981a3e5c2273f158f2a89430021543d586bda899750199b962b47a2"
+    PKG_URL="https://github.com/TrustedFirmware-A/trusted-firmware-a/archive/${PKG_VERSION}.tar.gz"
+    ;;
   H700)
     PKG_VERSION="2.12.0"
     PKG_SHA256="d95aaf292792c98035910d7e6c64ebfb297c897fef510415db1612f6d39f9223"
@@ -25,7 +30,7 @@ case ${DEVICE} in
     ;;
 esac
 
-PKG_URL="https://github.com/TrustedFirmware-A/trusted-firmware-a/archive/v${PKG_VERSION}.tar.gz"
+PKG_URL="${PKG_URL:-https://github.com/TrustedFirmware-A/trusted-firmware-a/archive/v${PKG_VERSION}.tar.gz}"
 
 
 [ -n "${KERNEL_TOOLCHAIN}" ] && PKG_DEPENDS_TARGET+=" gcc-${KERNEL_TOOLCHAIN}:host"

@@ -11,7 +11,7 @@ PKG_DEPENDS_TARGET="toolchain SDL2 flac zstd zlib"
 PKG_LONGDESC="Mednafen standalone emulator"
 
 case ${DEVICE} in
-  H700|SM8*) PKG_PATCH_DIRS+=" sdl-input" ;;
+  A133|H700|SM8*) PKG_PATCH_DIRS+=" sdl-input" ;;
 esac
 
 pre_configure_target() {
@@ -25,7 +25,7 @@ pre_configure_target() {
                       --disable-ssfplay"
 
   case ${DEVICE} in
-    RK3326|RK3566*|H700)
+    RK3326|RK3566*|A133|H700)
       DISABLED_MODULES+=" --disable-snes \
                           --disable-ss \
                           --disable-psx"
