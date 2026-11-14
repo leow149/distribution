@@ -1,0 +1,11 @@
+[Unit]
+Description=XR829 Bluetooth bring-up
+Before=bluetooth.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/xr829-bt-up
+
+[Install]
+WantedBy=multi-user.target

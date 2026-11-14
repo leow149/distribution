@@ -71,7 +71,7 @@
     FIRMWARE=""
 
   # Additional packages to install
-    ADDITIONAL_PACKAGES="a133-firmware"
+    ADDITIONAL_PACKAGES="a133-firmware xr829-bt"
 
   # Debug tty path
     DEBUG_TTY="/dev/ttyS0"

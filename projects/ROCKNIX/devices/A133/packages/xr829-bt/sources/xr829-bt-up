@@ -1,0 +1,27 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0
+# Copyright (C) 2026-present ROCKNIX (https://github.com/ROCKNIX)
+
+# The BT boot ROM misses the sync while the Wi-Fi firmware loads, so wait for wlan0.
+for i in $(seq 1 30); do
+  [ -e /sys/class/net/wlan0/address ] && break
+  sleep 1
+done
+sleep 3
+
+# BD address: Wi-Fi MAC + 2 (+1 is the second xradio interface)
+MAC=$(cat /sys/class/net/wlan0/address 2>/dev/null)
+if [ -n "${MAC}" ]; then
+  ADDR=$(printf '%s:%02x' "${MAC%:*}" $(( (0x${MAC##*:} + 2) % 256 )))
+else
+  ADDR=02:00:00:aa:bb:01
+fi
+
+# The first run after boot never gets the boot ROM sync; probe once first.
+timeout 5 xr829_bt_up -p >/dev/null 2>&1
+for try in 1 2 3; do
+  timeout 25 xr829_bt_up -F 0 -a "${ADDR}"
+  [ -e /sys/class/bluetooth/hci0 ] && exit 0
+  sleep 2
+done
+exit 1
