@@ -7,7 +7,7 @@ PKG_SHA256="4391c5c9eecd09ed00a2c9f5fe6f36419acf52d0084d6e98213d36d657206a45"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/Syllo/nvtop"
 PKG_URL="${PKG_SITE}/archive/${PKG_VERSION}.tar.gz"
-PKG_DEPENDS_TARGET="libdrm mesa"
+PKG_DEPENDS_TARGET="libdrm mesa systemd"
 PKG_LONGDESC="NVTOP stands for Neat Videocard TOP, a (h)top like task monitor for AMD, Intel and NVIDIA GPUs."
 PKG_TOOLCHAIN="cmake"
 
