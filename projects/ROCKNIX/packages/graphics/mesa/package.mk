@@ -3,11 +3,23 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="mesa"
-PKG_VERSION="26.2.4"
-PKG_SHA256="89d4c3bf09fac8968f4198d00a6328e5e0df02f18d4b17b8eedc6b1a5773ae6b"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.mesa3d.org/"
-PKG_URL="https://gitlab.freedesktop.org/mesa/mesa/-/archive/mesa-${PKG_VERSION}/mesa-mesa-${PKG_VERSION}.tar.gz"
+
+case ${DEVICE} in
+  A133)
+    PKG_VERSION="01bab9302a6bf0a082c7ba8c49d74427cf10b0cf"
+    PKG_SHA256="680f41e90ef4c2f4bf53bc87139b14eb77e6c4d0002fc5441522e0857742430e"
+    PKG_URL="https://gitlab.freedesktop.org/mesa/mesa/-/archive/${PKG_VERSION}/mesa-${PKG_VERSION}.tar.gz"
+    ;;
+  *)
+    PKG_VERSION="26.2.4"
+    PKG_SHA256="89d4c3bf09fac8968f4198d00a6328e5e0df02f18d4b17b8eedc6b1a5773ae6b"
+    PKG_URL="https://gitlab.freedesktop.org/mesa/mesa/-/archive/mesa-${PKG_VERSION}/mesa-mesa-${PKG_VERSION}.tar.gz"
+    PKG_PATCH_DIRS+=" rocknix"
+    ;;
+esac
+
 PKG_DEPENDS_HOST="toolchain:host expat:host libclc:host libdrm:host llvm:host Mako:host pyyaml:host spirv-tools:host"
 PKG_DEPENDS_TARGET="toolchain expat libdrm Mako:host pyyaml:host"
 PKG_LONGDESC="Mesa is a 3-D graphics library with an API."
@@ -15,7 +27,7 @@ PKG_PATCH_DIRS+=" ${DEVICE}"
 
 get_graphicdrivers
 
-if listcontains "${GRAPHIC_DRIVERS}" "panfrost"; then
+if listcontains "${GRAPHIC_DRIVERS}" "(panfrost|imagination)"; then
   PKG_DEPENDS_TARGET+=" mesa:host"
 fi
 
@@ -34,6 +46,10 @@ PKG_MESON_OPTS_HOST="-Dglvnd=disabled \
                      -Dprecomp-compiler=enabled \
                      -Dinstall-precomp-compiler=true"
 
+if listcontains "${GRAPHIC_DRIVERS}" "imagination"; then
+  PKG_MESON_OPTS_HOST="${PKG_MESON_OPTS_HOST//-Dvulkan-drivers= /-Dvulkan-drivers=imagination }"
+fi
+
 PKG_MESON_OPTS_TARGET="-Dc_link_args=-lgcc \
                        -Dcpp_link_args=-lgcc \
                        -Dgallium-drivers=${GALLIUM_DRIVERS// /,} \
@@ -49,7 +65,7 @@ PKG_MESON_OPTS_TARGET="-Dc_link_args=-lgcc \
                        -Dbuild-tests=false \
                        -Dmicrosoft-clc=disabled"
 
-if listcontains "${GRAPHIC_DRIVERS}" "panfrost"; then
+if listcontains "${GRAPHIC_DRIVERS}" "(panfrost|imagination)"; then
   # These options require that we have built mesa host as specified above
   PKG_MESON_OPTS_TARGET+=" -Dmesa-clc=system \
                            -Dprecomp-compiler=system"
