@@ -48,6 +48,7 @@ PKG_MESON_OPTS_HOST="-Dglvnd=disabled \
 
 if listcontains "${GRAPHIC_DRIVERS}" "imagination"; then
   PKG_MESON_OPTS_HOST="${PKG_MESON_OPTS_HOST//-Dvulkan-drivers= /-Dvulkan-drivers=imagination }"
+  PKG_MESON_OPTS_HOST="${PKG_MESON_OPTS_HOST//-Dtools=panfrost /-Dtools= }"
 fi
 
 PKG_MESON_OPTS_TARGET="-Dc_link_args=-lgcc \
