@@ -1,0 +1,58 @@
+Subject: [PATCH] sun4i-codec: add Allwinner A100/A133 configuration
+
+diff -ruN a/ucm2/Allwinner/sun50i-a100/HiFi.conf b/ucm2/Allwinner/sun50i-a100/HiFi.conf
+--- a/ucm2/Allwinner/sun50i-a100/HiFi.conf	1970-01-01 01:00:00.000000000 +0100
++++ b/ucm2/Allwinner/sun50i-a100/HiFi.conf	2026-11-14 18:55:41.457359964 +0100
+@@ -0,0 +1,34 @@
++SectionDevice."Speaker" {
++	Comment "Internal Speaker"
++
++	EnableSequence [
++		cset "name='Speaker Switch' on"
++	]
++
++	Value {
++		PlaybackMixerElem "DAC"
++		PlaybackPCM "hw:${CardId},0"
++	}
++
++	DisableSequence [
++		cset "name='Speaker Switch' off"
++	]
++
++	ConflictingDevice [
++		"Headphones"
++	]
++}
++
++SectionDevice."Headphones" {
++	Comment "Headphones"
++
++	Value {
++		PlaybackMixerElem "DAC"
++		PlaybackPCM "hw:${CardId},0"
++		JackControl "Headphone Jack"
++	}
++
++	ConflictingDevice [
++		"Speaker"
++	]
++}
+diff -ruN a/ucm2/conf.d/sun4i-codec/a100-audio-codec.conf b/ucm2/conf.d/sun4i-codec/a100-audio-codec.conf
+--- a/ucm2/conf.d/sun4i-codec/a100-audio-codec.conf	1970-01-01 01:00:00.000000000 +0100
++++ b/ucm2/conf.d/sun4i-codec/a100-audio-codec.conf	2026-11-14 18:55:41.454793467 +0100
+@@ -0,0 +1,14 @@
++# UCM for Allwinner A100/A133 Codec
++
++Syntax 3
++
++SectionUseCase."HiFi" {
++	File "/Allwinner/sun50i-a100/HiFi.conf"
++	Comment "Play HiFi quality Music"
++}
++
++FixedBootSequence [
++	cset "name='Line Out Playback Switch' off"
++	cset "name='Headphone Switch' on"
++	cset "name='Headphone Playback Volume' 4"
++]
