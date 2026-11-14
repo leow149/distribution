@@ -47,7 +47,11 @@ make_target() {
     ATF_SUSPEND+=" SUNXI_SUSPEND_STUB2=${STUB_DIR}/suspend_stub_lpddr3.bin"
   fi
 
-  CROSS_COMPILE="${TARGET_KERNEL_PREFIX}" LDFLAGS="" CFLAGS="" make PLAT=${ATF_PLATFORM} ${ATF_SUSPEND} bl31
+  if [ "${DEVICE}" = "A133" ]; then
+    ATF_AS="AS=${TARGET_KERNEL_PREFIX}gcc"
+  fi
+
+  CROSS_COMPILE="${TARGET_KERNEL_PREFIX}" LDFLAGS="" CFLAGS="" make PLAT=${ATF_PLATFORM} ${ATF_SUSPEND} ${ATF_AS} bl31
 }
 
 makeinstall_target() {
