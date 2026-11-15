@@ -1,0 +1,18 @@
+Firmware in this package
+========================
+
+powervr/rogue_22.102.54.38_v1.fw
+  PowerVR GE8300 (BVNC 22.102.54.38) firmware for the upstream "powervr" DRM
+  driver, from Imagination's linux-firmware fork
+  (https://gitlab.freedesktop.org/imagination/linux-firmware, branch
+  "powervr", commit 8a58f81). Distributed under the terms in
+  LICENSE.powervr (copied from that repository).
+
+xr829/boot_xr829.bin, fw_xr829.bin, sdd_xr829.bin, etf_xr829.bin,
+xr829/fw_xr829_bt.bin
+  XRadio XR829 Wi-Fi and Bluetooth firmware, taken from /lib/firmware of the
+  TrimUI Smart Pro stock firmware. Vendor (XRadio/Allwinner) binaries with
+  no licence file shipped alongside them; no redistribution terms are known.
+  They are only carried here for development on the port's own devices and
+  must not be published (or the package must download them from a source
+  with clear terms) before a public release.

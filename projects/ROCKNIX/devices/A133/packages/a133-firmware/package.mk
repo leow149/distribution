@@ -3,7 +3,7 @@
 
 PKG_NAME="a133-firmware"
 PKG_VERSION="1.0"
-PKG_LICENSE="proprietary"
+PKG_LICENSE="proprietary (see sources/NOTICE)"
 PKG_SITE=""
 PKG_URL=""
 PKG_DEPENDS_TARGET="toolchain"
@@ -13,4 +13,5 @@ PKG_TOOLCHAIN="manual"
 makeinstall_target() {
   mkdir -p ${INSTALL}/$(get_full_firmware_dir)
     cp -a ${PKG_DIR}/sources/firmware/* ${INSTALL}/$(get_full_firmware_dir)
+    cp ${PKG_DIR}/sources/LICENSE.powervr ${INSTALL}/$(get_full_firmware_dir)/powervr/
 }

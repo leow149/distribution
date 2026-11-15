@@ -2,26 +2,44 @@
 # SPDX-License-Identifier: GPL-2.0
 # Copyright (C) 2026-present ROCKNIX (https://github.com/ROCKNIX)
 
-# The BT boot ROM misses the sync while the Wi-Fi firmware loads, so wait for wlan0.
-for i in $(seq 1 30); do
+# Runs as a Type=exec service: nothing waits for it. On success xr829_bt_up -n
+# stays in the foreground holding the HCI UART (hci0) and BT_WAKE.
+
+# The BT boot ROM misses the sync while the Wi-Fi firmware loads, so give
+# wlan0 a little time to appear first (bounded: Wi-Fi may be disabled).
+for i in $(seq 1 15); do
   [ -e /sys/class/net/wlan0/address ] && break
   sleep 1
 done
-sleep 3
+sleep 2
 
-# BD address: Wi-Fi MAC + 2 (+1 is the second xradio interface)
-MAC=$(cat /sys/class/net/wlan0/address 2>/dev/null)
-if [ -n "${MAC}" ]; then
-  ADDR=$(printf '%s:%02x' "${MAC%:*}" $(( (0x${MAC##*:} + 2) % 256 )))
-else
-  ADDR=02:00:00:aa:bb:01
-fi
+# BD address: the Wi-Fi MAC + 2 as a 48-bit number (wlan0 and the second
+# xradio interface use +0 and +1). Without wlan0, a locally administered
+# unicast address from a hash of the SoC chip ID, so it is still unique and
+# stable per unit.
+bdaddr() {
+  MAC=$(cat /sys/class/net/wlan0/address 2>/dev/null)
+  if [ -n "${MAC}" ]; then
+    N=$(( (0x$(echo "${MAC}" | tr -d :) + 2) & 0xffffffffffff ))
+    HEX=$(printf '%012x' "${N}")
+  elif [ -r /sys/bus/nvmem/devices/sunxi-sid0/nvmem ]; then
+    H=$(head -c 16 /sys/bus/nvmem/devices/sunxi-sid0/nvmem | sha256sum | cut -c1-12)
+    B0=$(( (0x$(echo "${H}" | cut -c1-2) | 0x02) & 0xfe ))
+    HEX=$(printf '%02x%s' "${B0}" "$(echo "${H}" | cut -c3-12)")
+  else
+    return 1
+  fi
+  echo "${HEX}" | sed 's/../&:/g; s/:$//'
+}
+
+ADDR=$(bdaddr)
 
 # The first run after boot never gets the boot ROM sync; probe once first.
-timeout 5 xr829_bt_up -p >/dev/null 2>&1
+xr829_bt_up -p -q >/dev/null 2>&1
 for try in 1 2 3; do
-  timeout 25 xr829_bt_up -F 0 -a "${ADDR}"
-  [ -e /sys/class/bluetooth/hci0 ] && exit 0
+  # Only returns on failure (each attempt is bounded by an internal alarm).
+  xr829_bt_up -n -F 0 ${ADDR:+-a "${ADDR}"}
   sleep 2
 done
+echo "xr829-bt: giving up after 3 attempts" >&2
 exit 1
