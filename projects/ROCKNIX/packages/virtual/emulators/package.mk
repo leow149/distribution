@@ -1136,7 +1136,11 @@ makeinstall_target() {
 
   ### Sony Playstation
   case ${DEVICE} in
-    A133|H700|RK3326)
+    A133)
+      add_emu_core psx retroarch pcsx_rearmed true
+      add_emu_core psx retroarch pcsx_rearmed32 false
+      ;;
+    H700|RK3326)
       add_emu_core psx retroarch pcsx_rearmed32 true
       add_emu_core psx retroarch pcsx_rearmed false
       ;;
