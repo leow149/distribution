@@ -42,6 +42,9 @@ fi
 if [ -n "${PVR_I_WANT_A_BROKEN_VULKAN_DRIVER}" ]; then
   echo "PVR_I_WANT_A_BROKEN_VULKAN_DRIVER=${PVR_I_WANT_A_BROKEN_VULKAN_DRIVER}" >> ${env_file}
 fi
+if [ -n "${WLR_RENDER_DRM_DEVICE}" ]; then
+  echo "WLR_RENDER_DRM_DEVICE=${WLR_RENDER_DRM_DEVICE}" >> ${env_file}
+fi
 
 # Scan connectors
 card=/sys/class/drm/card${card_no}
