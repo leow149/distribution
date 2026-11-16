@@ -36,11 +36,15 @@ ADDR=$(bdaddr)
 
 # The first run after boot never gets the boot ROM sync; probe once first.
 xr829_bt_up -p -q >/dev/null 2>&1
-for try in 1 2 3; do
+# Up to three failed bring-ups; a block of the rfkill switch (exit code 3)
+# is not a failure: the uploader then waits for the unblock and starts over.
+fails=0
+while [ ${fails} -lt 3 ]; do
   # Returns on a failed bring-up (bounded by an internal alarm), or once the
   # controller is blocked or gone after the attach.
   xr829_bt_up -n ${ADDR:+-a "${ADDR}"}
+  [ $? -eq 3 ] || fails=$((fails + 1))
   sleep 2
 done
-echo "xr829-bt: giving up after 3 attempts" >&2
+echo "xr829-bt: giving up after 3 failed attempts" >&2
 exit 1
