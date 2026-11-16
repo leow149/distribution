@@ -37,8 +37,9 @@ ADDR=$(bdaddr)
 # The first run after boot never gets the boot ROM sync; probe once first.
 xr829_bt_up -p -q >/dev/null 2>&1
 for try in 1 2 3; do
-  # Only returns on failure (each attempt is bounded by an internal alarm).
-  xr829_bt_up -n -F 0 ${ADDR:+-a "${ADDR}"}
+  # Returns on a failed bring-up (bounded by an internal alarm), or once the
+  # controller is blocked or gone after the attach.
+  xr829_bt_up -n ${ADDR:+-a "${ADDR}"}
   sleep 2
 done
 echo "xr829-bt: giving up after 3 attempts" >&2

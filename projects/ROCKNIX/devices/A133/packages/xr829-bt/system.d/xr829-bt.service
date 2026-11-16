@@ -1,11 +1,15 @@
 [Unit]
 Description=XR829 Bluetooth bring-up
 # bluetoothd picks hci0 up whenever it appears: no ordering needed, and
-# nothing in the boot waits for this (Type=exec).
+# nothing in the boot waits for this (Type=exec). The uploader waits while
+# the rfkill switch is blocked and exits when the controller is blocked or
+# gone after the attach, so the restart loads the firmware again.
 
 [Service]
 Type=exec
 ExecStart=/usr/bin/xr829-bt-up
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
