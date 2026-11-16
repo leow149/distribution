@@ -12,7 +12,7 @@ them one-to-one into ieee80211_tx_rate (index, retry count, MCS, 40 MHz,
 SGI, short preamble flags), adding the successful attempt as the
 firmware only counts the failed ones.
 
-leonet (40 MHz), iperf3 vs host laptop, 10 s runs:
+home AP (40 MHz), iperf3 vs host laptop, 10 s runs:
   before: TX 28.7-29.3 Mbit/s, RX 36.5-36.9; iw tx rate MCS7 65 Mbit/s (20 MHz)
   after:  TX 29.5-31.8,        RX 35.1-38.4; iw tx rate MCS7 135-150 Mbit/s 40MHz
 Total vs. 20 MHz before HT40: TX +10%, RX +25-30%.

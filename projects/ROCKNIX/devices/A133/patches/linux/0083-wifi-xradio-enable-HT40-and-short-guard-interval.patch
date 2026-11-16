@@ -16,7 +16,7 @@ rate policy already encoded them.
 A 40 MHz AP that mac80211 narrows to 20 MHz (tested with
 disable_ht40=1) still associates and passes traffic.
 
-leonet (WPA2/WPA3 mixed, 2.4 GHz, 40 MHz AP), iperf3 vs host laptop:
+home AP (WPA2/WPA3 mixed, 2.4 GHz, 40 MHz AP), iperf3 vs host laptop:
   before (20 MHz): TX 25-29 Mbit/s, RX 27-30 Mbit/s
   after  (HT40):   TX 28.7-29.3,    RX 36.5-36.9 (iw: 40MHz, SGI)
 TX is unchanged here because TX status still folds the rate entries
